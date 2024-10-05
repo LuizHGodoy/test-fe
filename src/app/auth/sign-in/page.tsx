@@ -1,18 +1,21 @@
 "use client";
 
-import { useAuth } from "@/app/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuthStore } from "@/store/authStore";
 import { useState } from "react";
 
 export default function SignIn({
 	onSignUpClick,
 	onForgotPasswordClick,
-}: { onSignUpClick: () => void; onForgotPasswordClick: () => void }) {
+}: {
+	onSignUpClick: () => void;
+	onForgotPasswordClick: () => void;
+}) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const { login } = useAuth();
+	const login = useAuthStore((state) => state.login);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();

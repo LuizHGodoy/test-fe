@@ -14,9 +14,7 @@ export default function PasswordRecovery({
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		try {
-			// Aqui você deve implementar a lógica de recuperação de senha
-			// Por exemplo, fazer uma chamada API para enviar o email de recuperação
-			await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulando uma chamada API
+			await new Promise((resolve) => setTimeout(resolve, 1000));
 			setIsSubmitted(true);
 		} catch (error) {
 			console.error("Falha ao enviar o email de recuperação", error);

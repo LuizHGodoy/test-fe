@@ -1,15 +1,14 @@
 "use client";
 
 import AppComponent from "@/components/app";
-
+import { useAuthStore } from "@/store/authStore";
 import { useState } from "react";
 import Recovery from "./auth/recovery/page";
 import SignIn from "./auth/sign-in/page";
 import SignUp from "./auth/sign-up/page";
-import { useAuth } from "./contexts/auth-context";
 
 export default function Home() {
-	const { isAuthenticated } = useAuth();
+	const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 	const [authView, setAuthView] = useState<"signin" | "signup" | "recovery">(
 		"signin",
 	);

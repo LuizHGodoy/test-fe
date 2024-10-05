@@ -67,13 +67,11 @@ export default function CustomerForm() {
 		setErrors(newErrors);
 
 		if (isValid) {
-			// Submit the form data
 			console.log("Form submitted:", formData);
 			toast({
 				title: "Customer Added",
 				description: "The customer has been successfully added to the system.",
 			});
-			// Reset form after submission
 			setFormData({ name: "", email: "", cpfCnpj: "", phone: "" });
 		}
 	};

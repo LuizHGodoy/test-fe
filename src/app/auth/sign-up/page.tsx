@@ -1,9 +1,9 @@
 "use client";
 
-import { useAuth } from "@/app/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuthStore } from "@/store/authStore";
 import { useState } from "react";
 
 export default function SignUp({
@@ -13,7 +13,7 @@ export default function SignUp({
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
-	const { login } = useAuth();
+	const login = useAuthStore((state) => state.login);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -22,10 +22,7 @@ export default function SignUp({
 			return;
 		}
 		try {
-			// Aqui você deve implementar a lógica de cadastro
-			// Por exemplo, fazer uma chamada API para criar o usuário
-			await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulando uma chamada API
-			// Após o cadastro bem-sucedido, faça o login automático
+			await new Promise((resolve) => setTimeout(resolve, 1000));
 			await login(email, password);
 		} catch (error) {
 			console.error("Falha no cadastro", error);
