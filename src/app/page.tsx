@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import axiosInstance from "@/lib/axiosConfig";
+import axiosInstance from "@/services";
 import { useEffect, useState } from "react";
 
 export default function Dashboard() {
