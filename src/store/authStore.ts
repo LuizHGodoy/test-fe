@@ -60,6 +60,7 @@ export const useAuthStore = create<AuthState>()(
           isAuthenticated: false,
         }));
         localStorage.removeItem("authToken");
+        localStorage.removeItem("userImage");
       },
     }),
     {

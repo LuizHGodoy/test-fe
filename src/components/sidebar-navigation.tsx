@@ -9,18 +9,22 @@ import {
   Search,
   Users,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function SidebarNavigation() {
-  const [profileImage, setProfileImage] = useState("");
+  const [profileImage, setProfileImage] = useState(
+    localStorage.getItem("userImage"),
+  );
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const router = useRouter();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  console.log("penes:++++++++++++++++", isAuthenticated);
-  // if (!isAuthenticated) {
-  //   redirect("/auth/sign-in");
-  // }
+
+  const hasToken = localStorage.getItem("authToken");
+
+  if (!isAuthenticated && !hasToken) {
+    redirect("/auth/sign-in");
+  }
 
   const fetchUserImage = async () => {
     const response = await fetch("https://randomuser.me/api/");
@@ -32,10 +36,7 @@ export default function SidebarNavigation() {
   };
 
   const getImage = async () => {
-    const storedImage = localStorage.getItem("userImage");
-    if (storedImage) {
-      setProfileImage(storedImage);
-    }
+    if (profileImage) return;
 
     const image = await fetchUserImage();
     setProfileImage(image);
@@ -53,7 +54,7 @@ export default function SidebarNavigation() {
         <div className="flex items-center mb-4">
           <input
             type="text"
-            placeholder="Search"
+            placeholder="Pesquisar"
             className="w-full bg-gray-100 text-gray-900 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <Search className="w-5 h-5 ml-2 text-gray-400" />
@@ -67,19 +68,19 @@ export default function SidebarNavigation() {
           />
           <NavItem
             icon={<Users />}
-            label="Customers"
+            label="Clientes"
             onClick={() => router.push("/clientes")}
           />
           <NavItem
             icon={<FileText />}
-            label="Services"
-            onClick={() => router.push("/services")}
+            label="Serviços"
+            onClick={() => router.push("/servicos")}
           />
         </div>
       </div>
 
       <div className="mt-auto p-4">
-        <NavItem icon={<HelpCircle />} label="Help & Support" />
+        <NavItem icon={<HelpCircle />} label="Ajuda e Suporte" />
         <div className="mt-4 relative">
           <button
             type="button"
@@ -87,44 +88,45 @@ export default function SidebarNavigation() {
             className="flex items-center w-full p-2 rounded-md hover:bg-gray-100"
           >
             <img
-              src={profileImage}
-              alt="Profile"
+              src={profileImage || "#"}
+              alt="Perfil"
               className="w-8 h-8 rounded-full mr-2"
             />
-            <span className="text-sm font-medium text-gray-700">Profile</span>
+            <span className="text-sm font-medium text-gray-700">Perfil</span>
           </button>
           {isDropdownOpen && (
             <div className="absolute bottom-full left-0 w-full mb-2 bg-white shadow-lg rounded-md">
               <button
                 type="button"
                 onClick={() => {
-                  router.push("/profile");
+                  router.push("/perfil");
                   setIsDropdownOpen(false);
                 }}
                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >
-                Profile
+                Perfil
               </button>
               <button
                 type="button"
                 onClick={() => {
-                  router.push("/settings");
+                  router.push("/configuracoes");
                   setIsDropdownOpen(false);
                 }}
                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >
-                Settings
+                Configurações
               </button>
               <button
                 type="button"
                 onClick={() => {
                   useAuthStore.getState().logout();
+                  redirect("/auth/sign-in");
                 }}
                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >
                 <div className="flex items-center">
                   <LogOut className="w-4 h-4 mr-2" />
-                  Logout
+                  Sair
                 </div>
               </button>
             </div>

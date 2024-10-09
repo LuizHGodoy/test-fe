@@ -2,21 +2,24 @@
 
 import { Toaster } from "@/components/ui/toaster";
 import { useAuthStore } from "@/store/authStore";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { LoginForm } from "./login-form";
 
 export default function SignIn() {
   const router = useRouter();
 
-  const { login, isAuthenticated } = useAuthStore((state) => {
-    return {
-      login: state.login,
-      isAuthenticated: state.isAuthenticated,
-    };
-  });
-  const handleLogin = (email: string, password: string) => {
-    login(email, password).then(() => redirect("/"));
+  const login = useAuthStore((state) => state.login);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const handleLogin = async (email: string, password: string) => {
+    await login(email, password);
   };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/");
+    }
+  }, [isAuthenticated]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
