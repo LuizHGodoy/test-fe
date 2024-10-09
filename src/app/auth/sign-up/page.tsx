@@ -5,11 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Toaster } from "@/components/ui/toaster";
 import { useAuthStore } from "@/store/authStore";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function SignUp({
-  onSignInClick,
-}: { onSignInClick: () => void }) {
+export default function SignUp() {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -115,7 +115,7 @@ export default function SignUp({
             Já tem uma conta?{" "}
             <button
               type="button"
-              onClick={onSignInClick}
+              onClick={() => router.push("/auth/sign-in")}
               className="font-medium text-primary hover:text-primary/80"
             >
               Entrar

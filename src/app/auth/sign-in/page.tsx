@@ -2,19 +2,20 @@
 
 import { Toaster } from "@/components/ui/toaster";
 import { useAuthStore } from "@/store/authStore";
+import { redirect, useRouter } from "next/navigation";
 import { LoginForm } from "./login-form";
 
-export default function SignIn({
-  onSignUpClick,
-  onForgotPasswordClick,
-}: {
-  onSignUpClick: () => void;
-  onForgotPasswordClick: () => void;
-}) {
-  const login = useAuthStore((state) => state.login);
+export default function SignIn() {
+  const router = useRouter();
 
-  const handleLogin = async (email: string, password: string) => {
-    await login(email, password);
+  const { login, isAuthenticated } = useAuthStore((state) => {
+    return {
+      login: state.login,
+      isAuthenticated: state.isAuthenticated,
+    };
+  });
+  const handleLogin = (email: string, password: string) => {
+    login(email, password).then(() => redirect("/"));
   };
 
   return (
@@ -27,14 +28,14 @@ export default function SignIn({
         </div>
         <LoginForm
           onSubmit={handleLogin}
-          onForgotPasswordClick={onForgotPasswordClick}
+          onForgotPasswordClick={() => router.push("/auth/recovery")}
         />
         <div className="text-center">
           <p className="mt-2 text-sm text-muted-foreground">
             Não tem uma conta?{" "}
             <button
               type="button"
-              onClick={onSignUpClick}
+              onClick={() => router.push("/auth/sign-up")}
               className="font-medium text-primary hover:text-primary/80"
             >
               Cadastre-se

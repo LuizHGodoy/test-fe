@@ -23,11 +23,13 @@ export const useAuthStore = create<AuthState>()(
           });
           const token = response.data.access_token;
 
+          console.log("Token recuperado do localStorage:", token);
+
           set((state) => ({
             ...state,
             isAuthenticated: true,
           }));
-          zustandLocalStorage.setItem("authToken", token);
+          localStorage.setItem("authToken", token);
         } catch (error) {
           console.error("Erro ao fazer login:", error);
         }
@@ -46,7 +48,7 @@ export const useAuthStore = create<AuthState>()(
             ...state,
             isAuthenticated: true,
           }));
-          zustandLocalStorage.setItem("authToken", token);
+          localStorage.setItem("authToken", token);
         } catch (error) {
           console.error("Erro ao registrar:", error);
         }
@@ -57,7 +59,7 @@ export const useAuthStore = create<AuthState>()(
           ...state,
           isAuthenticated: false,
         }));
-        zustandLocalStorage.removeItem("authToken");
+        localStorage.removeItem("authToken");
       },
     }),
     {

@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 
 interface LoginFormProps {
-  onSubmit: (email: string, password: string) => Promise<void>;
+  onSubmit: (email: string, password: string) => void;
   onForgotPasswordClick: () => void;
 }
 
@@ -87,7 +87,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       </div>
 
       <div>
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full" onClick={handleSubmit}>
           Entrar
         </Button>
       </div>

@@ -1,3 +1,6 @@
+"use client";
+
+import { useAuthStore } from "@/store/authStore";
 import {
   FileText,
   HelpCircle,
@@ -6,14 +9,43 @@ import {
   Search,
   Users,
 } from "lucide-react";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-export default function SidebarNavigation({
-  setView,
-  userImage,
-  onLogout,
-}: any) {
+export default function SidebarNavigation() {
+  const [profileImage, setProfileImage] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const router = useRouter();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  console.log("penes:++++++++++++++++", isAuthenticated);
+  // if (!isAuthenticated) {
+  //   redirect("/auth/sign-in");
+  // }
+
+  const fetchUserImage = async () => {
+    const response = await fetch("https://randomuser.me/api/");
+    const data = await response.json();
+    const imageUrl = data.results[0].picture.large;
+    localStorage.setItem("userImage", imageUrl);
+
+    return imageUrl;
+  };
+
+  const getImage = async () => {
+    const storedImage = localStorage.getItem("userImage");
+    if (storedImage) {
+      setProfileImage(storedImage);
+    }
+
+    const image = await fetchUserImage();
+    setProfileImage(image);
+  };
+
+  useEffect(() => {
+    if (!profileImage) {
+      getImage();
+    }
+  }, [profileImage]);
 
   return (
     <nav className="w-64 bg-white shadow-md h-full flex flex-col">
@@ -31,17 +63,17 @@ export default function SidebarNavigation({
           <NavItem
             icon={<Home />}
             label="Dashboard"
-            onClick={() => setView("dashboard")}
+            onClick={() => router.push("/")}
           />
           <NavItem
             icon={<Users />}
             label="Customers"
-            onClick={() => setView("customers")}
+            onClick={() => router.push("/clientes")}
           />
           <NavItem
             icon={<FileText />}
             label="Services"
-            onClick={() => setView("services")}
+            onClick={() => router.push("/services")}
           />
         </div>
       </div>
@@ -55,7 +87,7 @@ export default function SidebarNavigation({
             className="flex items-center w-full p-2 rounded-md hover:bg-gray-100"
           >
             <img
-              src={userImage}
+              src={profileImage}
               alt="Profile"
               className="w-8 h-8 rounded-full mr-2"
             />
@@ -66,7 +98,7 @@ export default function SidebarNavigation({
               <button
                 type="button"
                 onClick={() => {
-                  setView("profile");
+                  router.push("/profile");
                   setIsDropdownOpen(false);
                 }}
                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -76,7 +108,7 @@ export default function SidebarNavigation({
               <button
                 type="button"
                 onClick={() => {
-                  setView("settings");
+                  router.push("/settings");
                   setIsDropdownOpen(false);
                 }}
                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -86,8 +118,7 @@ export default function SidebarNavigation({
               <button
                 type="button"
                 onClick={() => {
-                  onLogout();
-                  setIsDropdownOpen(false);
+                  useAuthStore.getState().logout();
                 }}
                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >
