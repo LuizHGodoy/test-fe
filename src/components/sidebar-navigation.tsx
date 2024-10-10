@@ -22,7 +22,7 @@ export default function SidebarNavigation() {
 
   const hasToken = localStorage.getItem("authToken");
 
-  if (!isAuthenticated && !hasToken) {
+  if (isAuthenticated && !hasToken) {
     redirect("/auth/sign-in");
   }
 

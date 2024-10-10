@@ -9,11 +9,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import axiosInstance from "@/services";
+import { getAllPlans } from "@/services/api/plans";
 import { useEffect, useState } from "react";
 
 export default function Dashboard() {
   const [planos, setPlanos] = useState([]);
+  const [selectedPlan, setSelectedPlan] = useState<any>(null);
   const [filtros, setFiltros] = useState({
     cliente: "",
     plano: "",
@@ -26,16 +27,9 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    const fetchPlanos = async () => {
-      try {
-        const response = await axiosInstance.get("/plans?page=1&limit=10");
-        setPlanos(response.data);
-      } catch (error) {
-        console.error("Erro ao buscar planos:", error);
-      }
-    };
-
-    fetchPlanos();
+    getAllPlans().then((response) => {
+      setPlanos(response);
+    });
   }, []);
 
   return (
@@ -55,7 +49,11 @@ export default function Dashboard() {
           <Label htmlFor="plano">Plano</Label>
           <Select onValueChange={(value) => handleFilterChange("plano", value)}>
             <SelectTrigger id="plano">
-              <SelectValue placeholder="Selecione o plano" />
+              <SelectValue
+                placeholder={
+                  selectedPlan ? selectedPlan.nome : "Selecione o plano"
+                }
+              />
             </SelectTrigger>
             <SelectContent>
               {planos.map((plano: any) => (
@@ -66,6 +64,7 @@ export default function Dashboard() {
             </SelectContent>
           </Select>
         </div>
+
         <div>
           <Label htmlFor="periodo">Período</Label>
           <Select
@@ -82,6 +81,7 @@ export default function Dashboard() {
             </SelectContent>
           </Select>
         </div>
+
         <div>
           <Label htmlFor="uf">UF</Label>
           <Input
@@ -92,6 +92,7 @@ export default function Dashboard() {
           />
         </div>
       </div>
+
       <div className="bg-gray-100 p-4 rounded">
         <p className="text-gray-700">
           O conteúdo do dashboard será exibido aqui com base nos filtros

@@ -29,7 +29,7 @@ axiosInstance.interceptors.response.use(
     if (error.response) {
       const { status, data } = error.response;
 
-      const errorMessage = data.message || "Erro inesperado. Tente novamente.";
+      const errormessage = data.message || "Erro inesperado. Tente novamente.";
 
       switch (status) {
         case 400:
@@ -53,7 +53,7 @@ axiosInstance.interceptors.response.use(
 
       toast({
         title: "Erro",
-        description: errorMessage,
+        description: errormessage,
       });
     } else if (error.request) {
       console.error("Nenhuma resposta do servidor. Verifique sua conexão.");

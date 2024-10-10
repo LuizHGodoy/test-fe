@@ -1,140 +1,90 @@
 "use client";
 
+import {
+  CreateClientForm,
+  IClienteFormularioData,
+} from "@/components/create-client-form";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
+import { CreateClientePayload, createClient } from "@/services/api/clients";
 import { useState } from "react";
 
+import {
+  removeMascaraCep,
+  removeMascaraDocumento,
+  removeMascaraTelefone,
+} from "@/common/utils/masks";
+import { toast } from "@/hooks/use-toast";
+
+const defaultClienteData: IClienteFormularioData = {
+  nome: "",
+  email: "",
+  cpfCnpj: "",
+  telefone: "",
+  logradouro: "",
+  numero: "",
+  complemento: "",
+  bairro: "",
+  cidade: "",
+  estado: "",
+  cep: "",
+};
+
 export default function CustomerForm() {
-  const { toast } = useToast();
-  const [dadosFormulario, setDadosFormulario] = useState({
-    nome: "",
-    email: "",
-    cpfCnpj: "",
-    telefone: "",
-  });
+  const [isCreating, setIsCreating] = useState(false);
+  const [clienteData, setClienteData] =
+    useState<IClienteFormularioData>(defaultClienteData);
 
-  const [erros, setErros] = useState({
-    nome: "",
-    email: "",
-    cpfCnpj: "",
-    telefone: "",
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setDadosFormulario((prev) => ({ ...prev, [name]: value }));
-    setErros((prev) => ({ ...prev, [name]: "" }));
+  const handleChange = (name: string, value: string) => {
+    setClienteData(() => ({ ...clienteData, [name]: value }));
   };
 
-  const validarEmail = (email: string) => {
-    const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return re.test(email);
-  };
+  const handleSubmit = async () => {
+    const payload: CreateClientePayload = {
+      nome: clienteData.nome,
+      documento: removeMascaraDocumento(clienteData.cpfCnpj),
+      endereco: {
+        logradouro: clienteData.logradouro as string,
+        numero: clienteData.numero as string,
+        complemento: clienteData.complemento,
+        bairro: clienteData.bairro,
+        cidade: clienteData.cidade,
+        estado: clienteData.estado,
+        cep: removeMascaraCep(clienteData.cep),
+      },
+      telefone: removeMascaraTelefone(clienteData.telefone),
+      email: clienteData.email,
+      dataNascimento: new Date(
+        clienteData.dataNascimento as string,
+      ).toISOString(),
+    };
 
-  const validarCpfCnpj = (cpfCnpj: string) => {
-    const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
-    const cnpjRegex = /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/;
-    return cpfRegex.test(cpfCnpj) || cnpjRegex.test(cpfCnpj);
-  };
+    const newClient = await createClient(payload);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    let isValid = true;
-    const novosErros = { ...erros };
-
-    if (!dadosFormulario.nome.trim()) {
-      novosErros.nome = "Nome é obrigatório";
-      isValid = false;
-    }
-
-    if (!validarEmail(dadosFormulario.email)) {
-      novosErros.email = "Endereço de email inválido";
-      isValid = false;
-    }
-
-    if (!validarCpfCnpj(dadosFormulario.cpfCnpj)) {
-      novosErros.cpfCnpj = "Formato de CPF/CNPJ inválido";
-      isValid = false;
-    }
-
-    if (!dadosFormulario.telefone.trim()) {
-      novosErros.telefone = "Telefone é obrigatório";
-      isValid = false;
-    }
-
-    setErros(novosErros);
-
-    if (isValid) {
-      console.log("Formulário enviado:", dadosFormulario);
-      toast({
-        title: "Cliente Adicionado",
-        description: "O cliente foi adicionado com sucesso ao sistema.",
-      });
-      setDadosFormulario({ nome: "", email: "", cpfCnpj: "", telefone: "" });
-    }
+    toast({ title: "Cliente criado com sucesso" });
   };
 
   return (
     <div className="bg-white shadow rounded-lg p-6">
-      <h2 className="text-2xl font-bold mb-6">Adicionar Cliente</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <Label htmlFor="nome">Nome</Label>
-          <Input
-            id="nome"
-            name="nome"
-            value={dadosFormulario.nome}
-            onChange={handleChange}
-            placeholder="Digite o nome do cliente"
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold">Adicionar Cliente</h2>
+        <Button type="submit" size="sm" onClick={() => setIsCreating(true)}>
+          Adicionar Cliente
+        </Button>
+      </div>
+      <div className="border-b border-gray-200 w-full">
+        {isCreating && (
+          <CreateClientForm
+            clienteData={clienteData}
+            handleChange={handleChange}
+            handleSubmit={handleSubmit}
+            setClienteData={setClienteData}
+            onCancel={() => {
+              setIsCreating(false);
+              setClienteData(defaultClienteData);
+            }}
           />
-          {erros.nome && (
-            <p className="text-red-500 text-sm mt-1">{erros.nome}</p>
-          )}
-        </div>
-        <div>
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            value={dadosFormulario.email}
-            onChange={handleChange}
-            placeholder="Digite o email do cliente"
-          />
-          {erros.email && (
-            <p className="text-red-500 text-sm mt-1">{erros.email}</p>
-          )}
-        </div>
-        <div>
-          <Label htmlFor="cpfCnpj">CPF/CNPJ</Label>
-          <Input
-            id="cpfCnpj"
-            name="cpfCnpj"
-            value={dadosFormulario.cpfCnpj}
-            onChange={handleChange}
-            placeholder="000.000.000-00 ou 00.000.000/0000-00"
-          />
-          {erros.cpfCnpj && (
-            <p className="text-red-500 text-sm mt-1">{erros.cpfCnpj}</p>
-          )}
-        </div>
-        <div>
-          <Label htmlFor="telefone">Telefone</Label>
-          <Input
-            id="telefone"
-            name="telefone"
-            value={dadosFormulario.telefone}
-            onChange={handleChange}
-            placeholder="Digite o telefone do cliente"
-          />
-          {erros.telefone && (
-            <p className="text-red-500 text-sm mt-1">{erros.telefone}</p>
-          )}
-        </div>
-        <Button type="submit">Adicionar Cliente</Button>
-      </form>
+        )}
+      </div>
     </div>
   );
 }

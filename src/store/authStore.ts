@@ -1,5 +1,5 @@
 import { zustandLocalStorage } from "@/lib/localStorage";
-import axiosInstance from "@/services/axiosConfig"; // Importando a instância do axios
+import axiosInstance from "@/services";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
