@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { updateClient } from "@/services/api/clients";
+import { updateService } from "@/services/api/aditional-services";
 import * as React from "react";
 import Modal from "./client-modal";
 import { Service } from "./columns";
@@ -39,15 +39,18 @@ export function ServicesTable({ data, fetchServices }: ServiceTableProps) {
       uuid: service.uuid,
       nome: service.nome,
       descricao: service.descricao,
-      preco: service.preco,
+      preco: Number(service.preco),
     };
 
     setSelectedService(newSelectedService);
     setIsModalOpen(true);
   };
 
-  const handleChange = (name: string, value: string) => {
-    setSelectedService((prev) => ({ ...prev, [name]: value }));
+  const handleChange = (name: string, value: string | number) => {
+    setSelectedService((prev) => ({
+      ...prev,
+      [name]: name === "preco" ? Number(value) : value,
+    }));
   };
 
   const handleConfirmEdit = () => {
@@ -58,12 +61,12 @@ export function ServicesTable({ data, fetchServices }: ServiceTableProps) {
     const payload: any = {
       nome: selectedService.nome,
       descricao: selectedService.descricao,
-      preco: selectedService.preco,
+      preco: Number(selectedService.preco),
     };
 
     if (!selectedService.uuid) return;
 
-    updateClient(payload, selectedService.uuid).then(() => {
+    updateService(payload, selectedService.uuid).then(() => {
       fetchServices();
       setIsModalOpen(false);
       toast({ title: "Serviço atualizado com sucesso" });

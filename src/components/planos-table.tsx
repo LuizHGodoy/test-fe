@@ -38,7 +38,7 @@ export function PlansTable({ data, fetchPlans }: PlansTableProps) {
       uuid: plan.uuid,
       nome: plan.nome,
       descricao: plan.descricao,
-      precoBase: plan.precoBase,
+      precoBase: Number(plan.precoBase),
     };
 
     setSelectedPlan(newSelectedClient);
@@ -49,15 +49,18 @@ export function PlansTable({ data, fetchPlans }: PlansTableProps) {
     setIsModalOpen(false);
   };
 
-  const handleChange = (name: string, value: string) => {
-    setSelectedPlan(() => ({ ...selectedPlan, [name]: value }));
+  const handleChange = (name: string, value: string | number) => {
+    setSelectedPlan((prev) => ({
+      ...prev,
+      [name]: name === "precoBase" ? Number(value) : value,
+    }));
   };
 
   const handleSubmit = () => {
     const payload: any = {
       nome: selectedPlan.nome,
       descricao: selectedPlan.descricao,
-      precoBase: selectedPlan.precoBase,
+      precoBase: Number(selectedPlan.precoBase),
     };
 
     if (!selectedPlan.uuid) return;

@@ -18,9 +18,9 @@ export const getAllServices = async () => {
   }
 };
 
-export const getServiceById = async (uuid: number) => {
+export const getServiceById = async (uuid: string) => {
   try {
-    const response = await axiosInstance.get(`/plans/${uuid}`);
+    const response = await axiosInstance.get(`/aditional-services/${uuid}`);
     return response.data;
   } catch (error) {
     handleAxiosError(error);
@@ -36,18 +36,25 @@ export const createService = async (payload: CreateServicePayload) => {
   }
 };
 
-export const updateService = async (uuid: number, data: any) => {
+export const updateService = async (
+  payload: Partial<CreateServicePayload>,
+  uuid: string,
+) => {
   try {
-    const response = await axiosInstance.put(`/plans/${uuid}`, data);
+    const response = await axiosInstance.patch(
+      `/aditional-services/${uuid}`,
+      payload,
+    );
+
     return response.data;
   } catch (error) {
     handleAxiosError(error);
   }
 };
 
-export const deleteService = async (uuid: number) => {
+export const deleteService = async (uuid: string) => {
   try {
-    const response = await axiosInstance.delete(`/plans/${uuid}`);
+    const response = await axiosInstance.delete(`/aditional-services/${uuid}`);
     return response.data;
   } catch (error) {
     handleAxiosError(error);

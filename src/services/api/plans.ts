@@ -16,7 +16,7 @@ export const getAllPlans = async () => {
   }
 };
 
-export const getPlanById = async (uuid: number) => {
+export const getPlanById = async (uuid: string) => {
   try {
     const response = await axiosInstance.get(`/plans/${uuid}`);
     return response.data;
@@ -34,16 +34,19 @@ export const createPlan = async (payload: CreatePlansPayload) => {
   }
 };
 
-export const updatePlan = async (uuid: number, data: any) => {
+export const updatePlan = async (
+  payload: Partial<CreatePlansPayload>,
+  uuid: string,
+) => {
   try {
-    const response = await axiosInstance.put(`/plans/${uuid}`, data);
+    const response = await axiosInstance.patch(`/plans/${uuid}`, payload);
     return response.data;
   } catch (error) {
     handleAxiosError(error);
   }
 };
 
-export const deletePlan = async (uuid: number) => {
+export const deletePlan = async (uuid: string) => {
   try {
     const response = await axiosInstance.delete(`/plans/${uuid}`);
     return response.data;
