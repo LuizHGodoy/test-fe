@@ -1,9 +1,15 @@
 import { handleAxiosError } from "@/common/exceptions/api-error";
 import axiosInstance from "..";
 
+export interface CreatePlansPayload {
+  nome: string;
+  descricao: string;
+  precoBase: number;
+}
+
 export const getAllPlans = async () => {
   try {
-    const response = await axiosInstance.get("/plans?page=1&limit=10");
+    const response = await axiosInstance.get("/plans?page=1&limit=5");
     return response.data;
   } catch (error) {
     handleAxiosError(error);
@@ -19,9 +25,9 @@ export const getPlanById = async (uuid: number) => {
   }
 };
 
-export const createPlan = async (data: any) => {
+export const createPlan = async (payload: CreatePlansPayload) => {
   try {
-    const response = await axiosInstance.post("/plans", data);
+    const response = await axiosInstance.post("/plans", payload);
     return response.data;
   } catch (error) {
     handleAxiosError(error);

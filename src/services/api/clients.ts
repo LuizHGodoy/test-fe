@@ -11,6 +11,16 @@ export interface CreateEnderecoPayload {
   cep: string;
 }
 
+export interface EditingEnderecoPayload {
+  logradouro?: string;
+  numero?: string;
+  complemento?: string;
+  bairro?: string;
+  cidade?: string;
+  estado?: string;
+  cep?: string;
+}
+
 export interface CreateClientePayload {
   nome: string;
   documento: string;
@@ -32,18 +42,21 @@ export const createClient = async (payload: CreateClientePayload) => {
   }
 };
 
-export const updateClient = async (payload: Partial<CreateClientePayload>) => {
+export const updateClient = async (
+  payload: Partial<CreateClientePayload>,
+  uuid: string,
+) => {
   try {
-    const response = await axiosInstance.patch("/clients", payload);
+    const response = await axiosInstance.patch(`/clientes/${uuid}`, payload);
     return response.data;
   } catch (error) {
     handleAxiosError(error);
   }
 };
 
-export const getAllClients = async () => {
+export const getAllClients = async (page: number) => {
   try {
-    const response = await axiosInstance.get("/clients");
+    const response = await axiosInstance.get(`/clientes?page=${page}&limit=5`);
     return response.data;
   } catch (error) {
     handleAxiosError(error);

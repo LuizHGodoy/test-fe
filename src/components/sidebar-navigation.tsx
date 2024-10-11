@@ -71,10 +71,20 @@ export default function SidebarNavigation() {
             label="Clientes"
             onClick={() => router.push("/clientes")}
           />
-          <NavItem
+          {/* <NavItem
             icon={<FileText />}
             label="Serviços"
             onClick={() => router.push("/servicos")}
+          /> */}
+          <NavItem
+            icon={<FileText />}
+            label="Planos"
+            onClick={() => router.push("/planos")}
+          />
+          <NavItem
+            icon={<Users />}
+            label="Serviços Adicionais"
+            onClick={() => router.push("/servicos-adicionais")}
           />
         </div>
       </div>
@@ -106,16 +116,7 @@ export default function SidebarNavigation() {
               >
                 Perfil
               </button>
-              <button
-                type="button"
-                onClick={() => {
-                  router.push("/configuracoes");
-                  setIsDropdownOpen(false);
-                }}
-                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              >
-                Configurações
-              </button>
+
               <button
                 type="button"
                 onClick={() => {

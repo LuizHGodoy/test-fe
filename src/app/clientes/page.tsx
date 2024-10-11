@@ -5,15 +5,21 @@ import {
   IClienteFormularioData,
 } from "@/components/create-client-form";
 import { Button } from "@/components/ui/button";
-import { CreateClientePayload, createClient } from "@/services/api/clients";
-import { useState } from "react";
+import {
+  CreateClientePayload,
+  createClient,
+  getAllClients,
+} from "@/services/api/clients";
+import { useEffect, useState } from "react";
 
 import {
   removeMascaraCep,
   removeMascaraDocumento,
   removeMascaraTelefone,
 } from "@/common/utils/masks";
-import { toast } from "@/hooks/use-toast";
+import { ClientesTable } from "@/components/clientes-table";
+import { Cliente } from "@/components/columns";
+import { toast } from "@/components/ui/use-toast";
 
 const defaultClienteData: IClienteFormularioData = {
   nome: "",
@@ -33,6 +39,9 @@ export default function CustomerForm() {
   const [isCreating, setIsCreating] = useState(false);
   const [clienteData, setClienteData] =
     useState<IClienteFormularioData>(defaultClienteData);
+  const [data, setData] = useState<Cliente[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const handleChange = (name: string, value: string) => {
     setClienteData(() => ({ ...clienteData, [name]: value }));
@@ -58,10 +67,34 @@ export default function CustomerForm() {
       ).toISOString(),
     };
 
-    const newClient = await createClient(payload);
+    await createClient(payload).then((data) => {
+      console.log(data);
+      toast({ title: "Cliente cadastrado com sucesso" });
+    });
 
-    toast({ title: "Cliente criado com sucesso" });
+    setIsCreating(false);
   };
+
+  const nextPage = () => {
+    if (currentPage === totalPages) return;
+
+    setCurrentPage(currentPage + 1);
+  };
+
+  const previousPage = () => {
+    if (currentPage === 1) return;
+    setCurrentPage(currentPage - 1);
+  };
+
+  const fetchClients = async () => {
+    const data = await getAllClients(currentPage);
+    setTotalPages(data.totalPages);
+    setData(data.clients);
+  };
+
+  useEffect(() => {
+    fetchClients();
+  }, [currentPage]);
 
   return (
     <div className="bg-white shadow rounded-lg p-6">
@@ -71,6 +104,7 @@ export default function CustomerForm() {
           Adicionar Cliente
         </Button>
       </div>
+
       <div className="border-b border-gray-200 w-full">
         {isCreating && (
           <CreateClientForm
@@ -85,6 +119,15 @@ export default function CustomerForm() {
           />
         )}
       </div>
+      {!isCreating && (
+        <ClientesTable
+          data={data}
+          nextPage={nextPage}
+          previousPage={previousPage}
+          totalPages={totalPages}
+          fetchClients={fetchClients}
+        />
+      )}
     </div>
   );
 }

@@ -6,6 +6,7 @@ import {
 } from "@/common/utils/masks";
 import { validateAndSubmitForm } from "@/common/utils/validationZod";
 import { isValidCEP } from "@/common/utils/validators";
+import { format } from "date-fns";
 import { useState } from "react";
 import { z } from "zod";
 import { Button } from "./ui/button";
@@ -13,6 +14,7 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 
 export interface IClienteFormularioData {
+  uuid?: string;
   nome: string;
   email: string;
   cpfCnpj: string;
@@ -169,7 +171,11 @@ export const CreateClientForm = ({
             id="dataNascimento"
             name="dataNascimento"
             type="date"
-            value={clienteData.dataNascimento}
+            value={
+              clienteData.dataNascimento
+                ? format(clienteData.dataNascimento, "dd/MM/yyyy")
+                : ""
+            }
             onChange={({ target }) => {
               const { name, value } = target;
               handleChange(name, value);
@@ -325,9 +331,9 @@ export const CreateClientForm = ({
           />
         </div>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 ">
         <Button type="submit" size="sm">
-          Adicionar Cliente
+          {`${clienteData.uuid ? "Editando" : "Adicionar"} Cliente`}
         </Button>
         <Button variant="ghost" onClick={onCancel}>
           Cancelar
