@@ -1,6 +1,16 @@
 import { handleAxiosError } from "@/common/exceptions/api-error";
 import axiosInstance from "..";
 
+export interface CreateVendaPayload {
+  clienteUuid: string;
+  planoUuid: string;
+  servicosAdicionaisUuids: string[];
+  totalVenda: number;
+  descontoAplicado: number;
+  vendedorUuid: string;
+  status: string;
+}
+
 export const getAllVendas = async () => {
   try {
     const response = await axiosInstance.get("/plans?page=1&limit=10");

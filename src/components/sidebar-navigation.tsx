@@ -2,11 +2,13 @@
 
 import { useAuthStore } from "@/store/authStore";
 import {
-  FileText,
+  FileBadge,
+  FileBadge2,
   HelpCircle,
   Home,
   LogOut,
   Search,
+  ShoppingCart,
   Users,
 } from "lucide-react";
 import { redirect, useRouter } from "next/navigation";
@@ -71,20 +73,20 @@ export default function SidebarNavigation() {
             label="Clientes"
             onClick={() => router.push("/clientes")}
           />
-          {/* <NavItem
-            icon={<FileText />}
-            label="Serviços"
-            onClick={() => router.push("/servicos")}
-          /> */}
           <NavItem
-            icon={<FileText />}
+            icon={<FileBadge2 />}
             label="Planos"
             onClick={() => router.push("/planos")}
           />
           <NavItem
-            icon={<Users />}
-            label="Serviços Adicionais"
+            icon={<FileBadge />}
+            label="Serviços"
             onClick={() => router.push("/servicos-adicionais")}
+          />
+          <NavItem
+            icon={<ShoppingCart />}
+            label="Vendas"
+            onClick={() => router.push("/vendas")}
           />
         </div>
       </div>

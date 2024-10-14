@@ -36,6 +36,17 @@ export type Plan = {
   precoBase: number;
 };
 
+export type Venda = {
+  uuid: string;
+  totalVenda: number;
+  descontoAplicado: number;
+  status: string;
+  vendedorUuid: string;
+  clientes: Cliente[];
+  planos: Plan[];
+  servicos: Service[];
+};
+
 export const columns: ColumnDef<Cliente>[] = [
   {
     accessorKey: "nome",

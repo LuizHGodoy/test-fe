@@ -2,6 +2,7 @@ import { zustandLocalStorage } from "@/lib/localStorage";
 import axiosInstance from "@/services";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { useUserStore } from "./userStore";
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -30,6 +31,8 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: true,
           }));
           localStorage.setItem("authToken", token);
+
+          useUserStore.getState().fetchUser();
         } catch (error) {
           console.error("Erro ao fazer login:", error);
         }

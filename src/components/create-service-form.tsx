@@ -1,6 +1,4 @@
-import { removeMascaraCep } from "@/common/utils/masks";
 import { validateAndSubmitForm } from "@/common/utils/validationZod";
-import { isValidCEP } from "@/common/utils/validators";
 import { useState } from "react";
 import { z } from "zod";
 import { Button } from "./ui/button";
@@ -35,7 +33,6 @@ export const CreateServiceForm = ({
   setServiceData,
   serviceData,
 }: ICreateServiceForm) => {
-  const [blockInputs, setBlockInputs] = useState(true);
   const [erros, setErros] = useState<
     Partial<Record<keyof IServiceFormularioData, string>>
   >({});
@@ -55,35 +52,6 @@ export const CreateServiceForm = ({
 
     setErros({});
     handleSubmit();
-  };
-
-  const handleBlurCEP = async (cep: string) => {
-    const cepSemMascara = removeMascaraCep(cep);
-
-    if (!cep) return;
-    if (isValidCEP(cepSemMascara)) {
-      try {
-        const response = await fetch(
-          `https://viacep.com.br/ws/${cepSemMascara}/json/`,
-        );
-        const data = await response.json();
-
-        if (!data.erro) {
-          setServiceData({
-            ...serviceData,
-            nome: data.nome,
-          });
-          setBlockInputs(false);
-        } else {
-          setErros((prev) => ({ ...prev, cep: "CEP não encontrado" }));
-        }
-      } catch (error) {
-        console.error("Erro ao buscar CEP:", error);
-        setErros((prev) => ({ ...prev, cep: "Erro ao buscar CEP" }));
-      }
-    } else {
-      setErros((prev) => ({ ...prev, cep: "CEP inválido" }));
-    }
   };
 
   return (
